@@ -6,4 +6,6 @@ Brijlal    Yashvir
 du Plooy    Andries
 Jones    Keanan  
 Nxumalo    Banele  
-van Schalkwyk    John  
+van Schalkwyk    John  u14307317
+
+The Broadsword team will be responsible for the implementation of the Web Navigation system.
