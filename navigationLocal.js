@@ -3,7 +3,6 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/NavgationDatabase';
 
-
 //====================================================================================================
 
 var addNewRoute = function(db, callback) {
@@ -27,6 +26,7 @@ var addNewRoute = function(db, callback) {
         callback();
     });
 };
+
 //====================================================================================================
 
 var addUserPreferences = function(db, callback) {
@@ -96,7 +96,6 @@ var displaySpecificRoute = function(db, callback) {
 
 //====================================================================================================
 
-
 var updateUserPreference = function(db, callback) {
     db.collection('userpreferences').updateOne({ "userID": "14307317" }, {
         $set: { "preferences": "" }
@@ -107,6 +106,7 @@ var updateUserPreference = function(db, callback) {
 };
 
 //====================================================================================================
+
 var removeUserData = function(db, callback) {
     db.collection('userpreferences').deleteOne({ "userID": "14307317" },
         function(err, results) {
@@ -115,18 +115,19 @@ var removeUserData = function(db, callback) {
         }
     );
 };
-//====================================================================================================
 
 //====================================================================================================
+//====================================================================================================
+
 MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
-    addUserPreferences(db, function() {}); // This will be used to insert a new User with preferences into the DataBase
-    findUser(db, function() {}); // This will return all the users in the UserPreferences collection
-    findSpecificUser(db, function() {}); // This will return a specific user and their preferences.
+    addUserPreferences(db, function() {}); 		// This will be used to insert a new User with preferences into the DataBase
+    findUser(db, function() {}); 				// This will return all the users in the UserPreferences collection
+    findSpecificUser(db, function() {}); 		// This will return a specific user and their preferences.
     addNewRoute(db, function() {});
     displaySpecificRoute(db, function() {});
     //updateUserPreference(db, function() {});
-    removeUserData(db, function() {}); // Delete a user and all their data.
+    removeUserData(db, function() {}); 			// Delete a user and all their data.
 
     db.close();
 });
