@@ -25,6 +25,12 @@ app.post('/accept', function(req, res) {
 
 function calculateRoute(inStart, inEnd)
 {
+	/*
+		Here the client will (in the final draft) be communicating with either:
+		1) The DB to get the route if it already exists
+		2) The path finding algorithm to create a new path AND then store it to DB
+	*/
+	
 	console.log("Route successfully calculated.");
 	
 	var json = JSON.stringify(

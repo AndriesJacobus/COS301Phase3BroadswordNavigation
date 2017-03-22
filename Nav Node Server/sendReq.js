@@ -1,3 +1,7 @@
+/*
+	This file illustrates how communication to the NavServer should be approached
+*/
+
 var request = require('request');
 
 request.post(
