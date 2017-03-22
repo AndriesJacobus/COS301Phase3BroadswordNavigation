@@ -1,12 +1,42 @@
 # COS301Phase3BroadswordNavigation
 COS 301 Team Broadsword navigation
 
-Surname				  Name		  Student Number<br />
-Bondjobo    	  Jocelyn  	u13232852<br />
-du Plooy    	  Andries		u15226183<br />
-Brijlal    		  Yashvir<br />
-Jones    			  Keanan<br />
-Nxumalo    		  Banele<br />
-van Schalkwyk   John  		u14307317<br />
+<table>
+  <tr>
+    <th>Surname</th>
+    <th>Name</th>
+    <th>Student Number</th>
+  </tr>
+  <tr>
+    <td>Bondjobo</td>
+    <td>Jocelyn</td>
+    <td>u13232852</td>
+  </tr>
+  <tr>
+    <td>du Plooy</td>
+    <td>Andries</td>
+    <td>u15226183</td>
+  </tr>
+  <tr>
+    <td>Brijlal</td>
+    <td>Yashvir</td>
+    <td>u...</td>
+  </tr>
+  <tr>
+    <td>Jones</td>
+    <td>Keanan</td>
+    <td>u...</td>
+  </tr>
+  <tr>
+    <td>Nxumalo</td>
+    <td>Banele</td>
+    <td>u...</td>
+  </tr>
+  <tr>
+    <td>van Schalkwyk</td>
+    <td>John</td>
+    <td>u14307317</td>
+  </tr>
+</table>
 
 The Broadsword team will be responsible for the implementation of the Web Navigation system.
