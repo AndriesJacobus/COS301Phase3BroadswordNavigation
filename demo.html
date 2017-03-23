@@ -20,6 +20,20 @@
 				this.path = [start.name];
 			}
 		}		
+
+		//Test Case 1: Outdoor to Outdoor
+		var sc = new Location("Student Centre");
+		var gb = new Location("Geography Building");
+		var oab = new Location("Old Arts Building");
+		var oaf = new Location("Old Arts Fountain");
+		var ag = new Location("Aula Grass");
+		var sc2ag = new Route(sc, ag);
+		sc2ag.path.push(gb.name);
+		sc2ag.path.push(oab.name);
+		sc2ag.path.push(oaf.name);
+		sc2ag.path.push(ag.name);
+
+		// console.log(sc2ag.path);
 	</script>
 </head>
 <body>
