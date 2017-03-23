@@ -63,6 +63,19 @@
 		it2og.path.push(og.name);
 		// console.log(it2og.path);
 
+		//Test Case 4: Outdoor to Indoor
+		var hbg = new Location("HB Grass");
+		var ml = new Location("Merensky Library");
+		var aa = new Location("Absa ATM");
+		var cb = new Location("Chancellor's Building");
+		var rh = new Location("Roos Hall");
+		var hbg2rh = new Route(hbg, rh);
+		hbg2rh.path.push(ml.name);
+		hbg2rh.path.push(aa.name);
+		hbg2rh.path.push(cb.name);
+		hbg2rh.path.push(st.name);
+		hbg2rh.path.push(rh.name);
+		console.log(hbg2rh.path);
 	</script>
 </head>
 <body>
