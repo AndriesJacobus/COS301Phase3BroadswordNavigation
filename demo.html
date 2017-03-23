@@ -32,8 +32,21 @@
 		sc2ag.path.push(oab.name);
 		sc2ag.path.push(oaf.name);
 		sc2ag.path.push(ag.name);
-
 		// console.log(sc2ag.path);
+
+		//Test Case 2: Indoor to Indoor
+		var it4_4 = new Location("IT 4-4");
+		var it4_5 = new Location("IT 4-5");
+		var st = new Location("Stairs");
+		var el = new Location("Elevator");
+		var gd = new Location("Glass Doors");
+		var pl = new Location("Project Labs");
+		var it2pl = new Route(it4_4, pl);
+		it2pl.push(it4_5.name);
+		it2pl.push(st.name);
+		it2pl.push(el.name);
+		it2pl.push(gd.name);
+		it2pl.push(pl.name);
 	</script>
 </head>
 <body>
