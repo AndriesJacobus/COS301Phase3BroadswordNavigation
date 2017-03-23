@@ -42,11 +42,27 @@
 		var gd = new Location("Glass Doors");
 		var pl = new Location("Project Labs");
 		var it2pl = new Route(it4_4, pl);
-		it2pl.push(it4_5.name);
-		it2pl.push(st.name);
-		it2pl.push(el.name);
-		it2pl.push(gd.name);
-		it2pl.push(pl.name);
+		it2pl.path.push(it4_5.name);
+		it2pl.path.push(st.name);
+		it2pl.path.push(el.name);
+		it2pl.path.push(gd.name);
+		it2pl.path.push(pl.name);
+		// console.log(it2pl.path);
+
+		//Test Case 3: Indoor to Outdoor
+		var it2_26 = new Location("IT 2-26");
+		var embb = new Location("EMB Benches");
+		var sat = new Location("Shop@Tuks");
+		var sba = new Location("Standard Bank ATM");
+		var og = new Location("Oom Gert");
+		var it2og = new Route(it2_26, og);
+		it2og.path.push(gd.name);
+		it2og.path.push(embb.name);
+		it2og.path.push(sat.name);
+		it2og.path.push(sba.name);
+		it2og.path.push(og.name);
+		// console.log(it2og.path);
+
 	</script>
 </head>
 <body>
