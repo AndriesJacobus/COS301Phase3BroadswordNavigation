@@ -76,6 +76,34 @@
 		hbg2rh.path.push(st.name);
 		hbg2rh.path.push(rh.name);
 		// console.log(hbg2rh.path);
+
+		function demoTestCases(caseNumber)
+		{
+			if(caseNumber == 1)
+			{
+				document.getElementById("case").innerHTML = "Test Case 1: Outdoor to Outdoor";
+				document.getElementById("name").innerHTML = sc2ag.name;
+				document.getElementById("path").innerHTML = "[" + sc2ag.path + "]";
+			}
+			if(caseNumber == 2)
+			{
+				document.getElementById("case").innerHTML = "Test Case 2: Indoor to Indoor";
+				document.getElementById("name").innerHTML = it2pl.name;
+				document.getElementById("path").innerHTML = "[" + it2pl.path + "]";
+			}
+			if(caseNumber == 3)
+			{
+				document.getElementById("case").innerHTML = "Test Case 3: Indoor to Outdoor";
+				document.getElementById("name").innerHTML = it2og.name;
+				document.getElementById("path").innerHTML = "[" + it2og.path + "]";
+			}
+			if(caseNumber == 4)
+			{
+				document.getElementById("case").innerHTML = "Test Case 4: Outdoor to Indoor";
+				document.getElementById("name").innerHTML = hbg2rh.name;
+				document.getElementById("path").innerHTML = "[" + hbg2rh.path + "]";
+			}
+		}
 	</script>
 </head>
 <body>
