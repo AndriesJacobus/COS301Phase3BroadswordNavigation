@@ -3,7 +3,23 @@
 <head>
 	<title>Demo</title>
 	
+	<script type="text/javascript">
+		class Location
+		{
+			constructor(name)
+			{
+				this.name = name;
+			}
+		}
 
+		class Route
+		{
+			constructor(start, end)
+			{
+				this.name = start.name +"->" + end.name;
+				this.path = [start.name];
+			}
+		}		
 	</script>
 </head>
 <body>
