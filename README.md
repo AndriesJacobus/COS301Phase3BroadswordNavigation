@@ -30,7 +30,7 @@ COS 301 Team Broadsword navigation
   <tr>
     <td>Nxumalo</td>
     <td>Banele</td>
-    <td>u...</td>
+    <td>u12201911</td>
   </tr>
   <tr>
     <td>van Schalkwyk</td>
