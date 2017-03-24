@@ -11,6 +11,14 @@
 	<link href='https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css' rel='stylesheet' />
   </head>
 <body>
+	<div id='map' style='width: 400px; height: 300px;'></div>
+	<script>
+	mapboxgl.accessToken = 'pk.eyJ1Ijoiam9zZXBoYm9uZGpvYm8iLCJhIjoiY2owbnV0YTR1MDAwYTJ3cnlvZXVncDBubiJ9.7hmYQc_5yLLT1ZNnzFPhWQ';
+	var map = new mapboxgl.Map({
+	container: 'map',
+	style: 'mapbox://styles/mapbox/streets-v9'
+	});
+	</script>
 <!-- +++++ Form section +++++ -->
 	<div class="content" sytle="text-align: center">
 		<div class="title" style="text-align:center">
