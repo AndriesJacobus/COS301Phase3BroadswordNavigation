@@ -23,11 +23,38 @@ var displaySpecificRoute = function(db, callback) {
 };
 //=======================================================================================
 
-searchRouteInCachedRoutes("Humanities", "Law");
+var path = searchRouteInCachedRoutes("Humanities", "Law");
+console.log("===========================================");
+console.log("The Path Returned");
+console.log("===========================================");
+console.log(path); // This needs to be returned as local variable, but gets called before the async method and thus is set to undefied
+console.log("===========================================");
+
+function getRoutes() {
+    return new Promise(function(resolve, reject) {
+        MongoClient.connect(url, function(err, db) {
+            db.collection('routes').find({ "beginPoint": "Humanities" }).toArray(function(err, results) {
+
+            });
+
+        });
+    });
+
+}
+
+getRoutes().then(function(v) { // `delay` returns a promise
+    console.log(v); // Log the value once it is resolved
+}).catch(function(v) {
+    // Or do something else if it is rejected 
+    // (it would not happen in this example, since `reject` is not called).
+});
+
+
 
 function searchRouteInCachedRoutes(beginPoint, endPoint) {
 
     //=================================================================================================
+
     MongoClient.connect(url, function(err, db) {
 
         db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
@@ -52,6 +79,7 @@ function searchRouteInCachedRoutes(beginPoint, endPoint) {
                     for (var i = 0; i < paths.length; i++) {
                         console.log(JSON.stringify(paths[i])); // Display the routes that are available based on the start and endpoint.
                     }
+                    return paths;
 
                 } else
                     console.log("The route was not cahced and needs to be calculated.");
