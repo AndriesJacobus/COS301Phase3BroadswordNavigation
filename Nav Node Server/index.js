@@ -7,7 +7,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.get('/accept', function(req, res) {
-    'use strict';
+    	'use strict';
 	var start = req.body.start;
 	var end = req.body.end;
 	console.log("\nNavigation Request received: ");
