@@ -41,6 +41,20 @@ function calculateRoute(inStart, inEnd) {
     return json;
 }
 
+app.get('/getJsonFromNav', function(req, res) {
+    'use strict';
+    var start = req.body.start;
+    var end = req.body.end;   
+        if (res.statusCode == 200) {
+            //console.log(body)
+            console.log("\Route received (from start to finish):\n");
+            console.log("Start: "  + res.body.start);
+            //console.log("Middle: " + res.body.middle);
+            console.log("End: " + response.body.end);
+        }
+    
+});
+
 function sendStartAndEndToGIS(start_,end_){
 //this function will send a getrequest to the gis with the json object containing end and start point
 
