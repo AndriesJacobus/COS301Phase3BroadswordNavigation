@@ -26,6 +26,7 @@ console.log("===========================================\n");
 
 function getCachedRoutes(beginPoint, endPoint) {
     searchRouteInCachedRoutes(beginPoint, endPoint);
+    return cachedStatus; // Indicate if we habe the route cached or not.
 }
 
 function searchRouteInCachedRoutes(beginPoint, endPoint) {
