@@ -1,22 +1,61 @@
-var Sync = require('sync');
+var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
+var url = 'mongodb://localhost:27017/NavgationDatabase';
 
-var amount;
 
-function asyncFunction(a, b, callback) {
-    process.nextTick(function() {
-        callback(null, a + b);
-    })
+//-----------------------------------------------------------
+//         Variables Needed For Cached Paths Searching
+//-----------------------------------------------------------
+var pathResolve;
+var cachedRouteAvalilable = false; // Default to no route available in cache.
+
+
+var localPatths = new Promise((resolve, reject) => {
+    pathResolve = resolve;
+});
+//-----------------------------------------------------------
+
+checkForCahcedRoute("Humanities", "Law");
+
+function checkForCahcedRoute(beginPoint, endPoint) {
+
+    MongoClient.connect(url, function(err, db) {
+        db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
+            try {
+                var paths = [];
+                paths.push(results);
+                pathResolve(paths);
+            } catch (error) {
+                console.log("========================================================");
+                console.log("Catch error occured when connecting to MongoClient to get query results");
+                console.log("========================================================");
+                console.log(error);
+                console.log("========================================================");
+            }
+        });
+        db.close(); // Close the DB connection
+    });
+
+    pathConsumer(beginPoint, endPoint);
+
 }
 
-// Run in a fiber 
-Sync(function() {
+function pathConsumer(bp, ep) {
+    console.log("Within pathConsumer Function");
+    localPatths.then(pathsArray => {
+        pathsArray.forEach(path => {
 
-    // Function.prototype.sync() interface is same as Function.prototype.call() - first argument is 'this' context 
-    var result = asyncFunction.sync(null, 2, 3);
-    console.log(result); // 5 
-    amount = result;
+            var beginPoint = path[0]['beginPoint'];
+            var endPoint = path[0]['endPoint'];
 
-})
+            if (beginPoint == bp && endPoint == ep) {
+                console.log("We have your path");
+                return pathResolve;
+
+            }
 
 
-console.log("The Result : " + amount);
+
+        })
+    })
+}

@@ -2,26 +2,19 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/NavgationDatabase';
 
-// --------------------------------------------------------------------------------------
-//                 VARIABLES TO BE USED 
-
+//-----------------------------------------------------------
+//         Variables Needed For Cached Paths Searching
+//-----------------------------------------------------------
 var paths = [];
 var resultsLength;
 var cachedStatus = false;
-// --------------------------------------------------------------------------------------
+// ----------------------------------------------------------
 
-
-//=======================================================================================
-var displaySpecificRoute = function(db, callback) {
-    var cursor = db.collection('routes').find({ "routeID": "1" });
-    cursor.each(function(err, doc) {
-        assert.equal(err, null);
-    });
-};
-//=======================================================================================
 
 
 getCachedRoutes("Humanities", "Law");
+console.log("getCachedRoutes() called.\n");
+
 
 console.log("===========================================");
 console.log("The Path Returned");
@@ -29,10 +22,10 @@ console.log("===========================================");
 console.log("Route available : " + cachedStatus);
 console.log("===========================================");
 console.log(paths); // This needs to be returned as local variable, but gets called before the async method and thus is set to undefied
-console.log("===========================================");
+console.log("===========================================\n");
 
 function getCachedRoutes(beginPoint, endPoint) {
-    searchRouteInCachedRoutes("Humanities", "Law");
+    searchRouteInCachedRoutes(beginPoint, endPoint);
 }
 
 function searchRouteInCachedRoutes(beginPoint, endPoint) {
@@ -56,6 +49,7 @@ function searchRouteInCachedRoutes(beginPoint, endPoint) {
                 }
                 if (cachedStatus == true) {
                     console.log("We have the route cached."); // Indicate that we have a cached route available.
+                    console.log("Route available : " + cachedStatus);
                     for (var i = 0; i < paths.length; i++) {
                         console.log(JSON.stringify(paths[i])); // Display the routes that are available based on the start and endpoint.
                     }
@@ -74,37 +68,3 @@ function searchRouteInCachedRoutes(beginPoint, endPoint) {
     //=================================================================================================
 
 }
-
-
-/*
-var localPatths = new Promise();
-
-MongoClient.connect(url, function(err, db) {
-    db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
-        try {
-            var paths = [];
-
-            localPatths.resolve(paths);
-        } catch (error) {
-
-        }
-    });
-});
-
-function pathConsumer() {
-    localPatths.then(pathsArray => {
-
-        pathsArray.forEach(path => {
-            console.log(path);
-        })
-    })
-}
-
-function noneConsumer() {
-
-}
-
-pathConsumer();
-noneConsumer();
-
-*/
