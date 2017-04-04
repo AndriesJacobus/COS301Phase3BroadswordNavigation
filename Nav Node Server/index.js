@@ -12,8 +12,8 @@ app.get('/accept', function(req, res) {
 	var end = req.body.end;
 	console.log("\nNavigation Request received: ");
 	console.log("===============================");
-  console.log("Start: " + start);
-  console.log("End: " + end);
+	console.log("Start: " + start);
+	console.log("End: " + end);
 	console.log("Now calculating route...");
 	res.writeHead(100, {"Content-Type": "application/json"});
 	res.end(calculateRoute(start, end));
