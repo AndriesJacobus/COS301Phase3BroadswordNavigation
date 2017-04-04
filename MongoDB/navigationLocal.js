@@ -80,6 +80,87 @@ var removeUserData = function(db, callback) {
 //====================================================================================================
 
 //====================================================================================================
+var addRoute = function(db, callback)
+{
+    db.collection('routes').insertOne({ 
+        "data": [
+        {
+          "type": "locations",
+          "id": "58d0f6d13843f43a2c43768d",
+          "attributes": {
+          "location_type": "Venue",
+          "room": "4-150",
+          "building": "EMB",
+          "lng": -29.364,
+          "lat": 144.207,
+          "level": 4,
+          "ground": 2
+        }
+        },
+        {
+          "type": "locations",
+          "id": "58d0f6b92503f43a2c43768d",
+          "attributes": {
+          "location_type": "Walkway",
+          "room": "none",
+          "building": "IT/EMB",
+          "lng": -30.785,
+          "lat": 155.317,
+          "level": 4,
+          "ground": 2
+        }
+        },
+        {
+        "type": "locations",
+        "id": "67dff6b92503f43a2c43768d",
+        "attributes": {
+        "location_type": "Venue",
+        "room": "4-4",
+        "building": "IT",
+        "lng": -31.544,
+        "lat": 157.244,
+        "level": 4,
+        "ground": 2
+        }
+        },
+        {
+        "type": "locations",
+        "id": "58d0f6b92503f43a2c43768d",
+        "attributes": {
+        "location_type": "Venue",
+        "room": "4-4",
+        "building": "IT",
+        "lng": -32.364,
+        "lat": 153.207,
+        "level": 4,
+        "ground": 2
+        }
+        },
+        {
+        "type": "locations",
+        "id": "58d0f6b92503f43a2c879634",
+        "attributes": {
+        "location_type": "Venue",
+        "room": "4-5",
+        "building": "IT",
+        "lng": -33.475,
+        "lat": 154.145,
+        "level": 4,
+        "ground": 2
+        }
+        }
+      ]
+    },
+        function(err, results) {
+            console.log(results);
+            callback();
+        }
+    );
+}
+//====================================================================================================
+
+
+//====================================================================================================
 MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
     addUserPreferences(db, function() {}); // This will be used to insert a new User with preferences into the DataBase
@@ -88,6 +169,8 @@ MongoClient.connect(url, function(err, db) {
 
     //updateUserPreference(db, function() {});
     removeUserData(db, function() {}); // Delete a user and all their data.
+
+    addRoute(db, function() {});
 
     db.close();
 });
