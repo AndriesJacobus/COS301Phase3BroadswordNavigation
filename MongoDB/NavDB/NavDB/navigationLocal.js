@@ -1,9 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/NavgationDatabase';
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
 
 // --------------------------------------------------------------------------------------
 //                 VARIABLES TO BE USED 
@@ -77,3 +74,37 @@ function searchRouteInCachedRoutes(beginPoint, endPoint) {
     //=================================================================================================
 
 }
+
+
+/*
+var localPatths = new Promise();
+
+MongoClient.connect(url, function(err, db) {
+    db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
+        try {
+            var paths = [];
+
+            localPatths.resolve(paths);
+        } catch (error) {
+
+        }
+    });
+});
+
+function pathConsumer() {
+    localPatths.then(pathsArray => {
+
+        pathsArray.forEach(path => {
+            console.log(path);
+        })
+    })
+}
+
+function noneConsumer() {
+
+}
+
+pathConsumer();
+noneConsumer();
+
+*/
