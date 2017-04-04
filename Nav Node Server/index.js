@@ -6,21 +6,18 @@ var port = 5000;
 var app = express();
 app.use(bodyParser.json());
 
-app.post('/accept', function(req, res) {
+app.get('/accept', function(req, res) {
     'use strict';
-    //console.log("JSON received: " + req.body);
-    var start = req.body.start;
-    var end = req.body.end;
-    console.log("\nNavigation Request received: ");
-    console.log("-------------------------------");
+	var start = req.body.start;
+	var end = req.body.end;
+	console.log("\nNavigation Request received: ");
+	console.log("===============================");
     console.log("Start: " + start);
     console.log("End: " + end);
-    console.log("Now calculating route...");
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(calculateRoute(start, end));
-
-    console.log("-------------------------------");
+	console.log("Now calculating route...");
+	res.writeHead(100, {"Content-Type": "application/json"});
+	res.end(calculateRoute(start, end));
+	console.log("===============================");
 });
 
 function calculateRoute(inStart, inEnd) {
