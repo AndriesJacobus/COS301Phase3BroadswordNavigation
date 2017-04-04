@@ -23,69 +23,51 @@ var displaySpecificRoute = function(db, callback) {
 };
 //=======================================================================================
 
-var path = searchRouteInCachedRoutes("Humanities", "Law");
+
+getCachedRoutes("Humanities", "Law");
+
 console.log("===========================================");
 console.log("The Path Returned");
 console.log("===========================================");
-console.log(path); // This needs to be returned as local variable, but gets called before the async method and thus is set to undefied
+console.log("Route available : " + cachedStatus);
+console.log("===========================================");
+console.log(paths); // This needs to be returned as local variable, but gets called before the async method and thus is set to undefied
 console.log("===========================================");
 
-function getRoutes() {
-    return new Promise(function(resolve, reject) {
-        MongoClient.connect(url, function(err, db) {
-            db.collection('routes').find({ "beginPoint": "Humanities" }).toArray(function(err, results) {
-
-            });
-
-        });
-    });
-
+function getCachedRoutes(beginPoint, endPoint) {
+    searchRouteInCachedRoutes("Humanities", "Law");
 }
 
-getRoutes().then(function(v) { // `delay` returns a promise
-    console.log(v); // Log the value once it is resolved
-}).catch(function(v) {
-    // Or do something else if it is rejected 
-    // (it would not happen in this example, since `reject` is not called).
-});
-
-
-
 function searchRouteInCachedRoutes(beginPoint, endPoint) {
-
     //=================================================================================================
-
     MongoClient.connect(url, function(err, db) {
 
         db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
-
             try {
                 //console.log(JSON.stringify(results));
                 resultsLength = results.length;
                 console.log("The amount of results returned are : " + resultsLength);
 
                 for (var i = 0; i < resultsLength; i++) {
-                    var bp = results[0]['beginPoint'];
-                    var ep = results[0]['endPoint'];
+                    var bp = results[i]['beginPoint'];
+                    var ep = results[i]['endPoint'];
 
                     if (beginPoint == bp && endPoint == ep) { // Traverse the results and see if any of them have the same start and endpoints as the requested ones.
                         cachedStatus = true;
                         paths.push(results[i]);
                     }
                 }
-
                 if (cachedStatus == true) {
                     console.log("We have the route cached."); // Indicate that we have a cached route available.
                     for (var i = 0; i < paths.length; i++) {
                         console.log(JSON.stringify(paths[i])); // Display the routes that are available based on the start and endpoint.
                     }
-                    return paths;
 
                 } else
                     console.log("The route was not cahced and needs to be calculated.");
 
             } catch (error) {
-                console.log("No cached routs listed with specified starting point.");
+                console.log("No cached routes listed with specified starting point.");
             }
         });
 

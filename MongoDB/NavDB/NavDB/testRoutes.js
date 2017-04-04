@@ -1,39 +1,22 @@
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/NavgationDatabase');
+var Sync = require('sync');
 
-var db = mongoose.connection;
+var amount;
 
-db.on('error', function(err) {
-    console.log('connection error', err);
-});
-db.once('open', function() {
-    console.log('connected.');
-});
-
-var Schema = mongoose.Schema;
-var userSchema = new Schema({
-    name: String,
-    age: Number,
-    DOB: Date,
-    isAlive: Boolean
-});
-
-userSchema.methods.isYounger = function() {
-    return this.model('User').age < 50 ? true : false;
+function asyncFunction(a, b, callback) {
+    process.nextTick(function() {
+        callback(null, a + b);
+    })
 }
 
-var User = mongoose.model('User', userSchema);
+// Run in a fiber 
+Sync(function() {
 
-var arvind = new User({
-    name: 'Arvind',
-    age: 99,
-    DOB: '01/01/1915',
-    isAlive: true
-});
+    // Function.prototype.sync() interface is same as Function.prototype.call() - first argument is 'this' context 
+    var result = asyncFunction.sync(null, 2, 3);
+    console.log(result); // 5 
+    amount = result;
 
-arvind.save(function(err, data) {
-    if (err) console.log(err);
-    else console.log('Saved ', data);
-});
+})
 
-console.log('isYounger : ', arvind.isYounger());
+
+console.log("The Result : " + amount);
