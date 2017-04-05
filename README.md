@@ -52,6 +52,6 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 
 <h3><b>Compile notes:</b></h3>
 <ul>
-	<li>Example code to send a request to Navigation to navigate, say from A to B is given in the file "Nav Node Server/sendRequest.js"</li>
+	<li>Example code to send a request to Navigation to navigate, say from A to B (like a request from Access), is given in the file "Nav Node Server/sendRequest.js"</li>
 	<li>Example code to receive a request by GIS from Navigation to navigate, say from A to B is given in the file "Nav Node Server/index.js" - search for the relevant comment</li>
 </ul>
