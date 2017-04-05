@@ -49,9 +49,8 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 	<li>Run navigationLocal in main branch directory</li>
 	<li>Navigate to "Nav Node Server" directory and run index.js to start serter</li>
 </ol>
-<br/>
 
-<h3><i>Compile notes:</i></h3>
+<h3><b>Compile notes:</b></h3>
 <ul>
 	<li>Example code to send a request to Navigation to navigate, say from A to B is given in the file "Nav Node Server/sendRequest.js"</li>
 	<li>Example code to receive a request by GIS from Navigation to navigate, say from A to B is given in the file "Nav Node Server/index.js" - search for the relevant comment</li>
