@@ -46,12 +46,12 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 
 <ol>
 	<li>Start MongoDB</li>
-	<li>Run navigationLocal in main branch directory</li>
-	<li>Navigate to "Nav Node Server" directory and run index.js to start serter</li>
+	<li>Run navigationLocal.js in main branch directory</li>
+	<li>Navigate to "Nav Node Server" directory and run index.js to start server</li>
 </ol>
 
 <h3><b>Compile notes:</b></h3>
 <ul>
-	<li>Example code to send a request to Navigation to navigate, say from A to B (like a request from Access), is given in the file "Nav Node Server/sendRequest.js"</li>
-	<li>Example code to receive a request by GIS from Navigation to navigate, say from A to B is given in the file "Nav Node Server/index.js" - search for the relevant comment</li>
+	<li>Example code to send a request to Navigation from Access for example is given in the file "Nav Node Server/sendRequest.js"</li>
+	<li>Example code to receive a request by GIS from Navigation to get a route, is given in the file "Nav Node Server/index.js" - search for the relevant comment</li>
 </ul>
