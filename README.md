@@ -51,7 +51,7 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 </ol>
 
 <h3><b>Compile notes:</b></h3>
-<h4>Example code has been given on how the other modules can communicate with Navigation and how Navigation expects them to communicate back.
+<h4>Example code has been given on how the other modules can communicate with Navigation and how Navigation expects them to communicate back.</h4>
 <br/>
 <br/>
 Running a full demo with only the examples can be done simply by using the following steps:</h4>
