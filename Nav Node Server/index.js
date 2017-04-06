@@ -11,24 +11,89 @@ var port = 5000;
 var app = express();
 app.use(bodyParser.json());
 
-app.post('/accept', function(req, res) {
-    'use strict';
-	var start = req.body.start;
-	var end = req.body.end;
-	
-	console.log("\nGet Route Request received: ");
-	console.log("===============================");
-	console.log("Start: " + start);
-	console.log("End: " + end + "\n");
-	console.log("Now retrieving route...");
-	
-	res.writeHead(100, {"Content-Type": "application/json"});
-	res.end(retrieveRoute(start, end));
-	
-	console.log("===============================");
+var nsq = require('nsqjs');
+var reader = new nsq.Reader('navigation', 'navup', { lookupdHTTPAddresses : '127.0.0.1:4161', nsqdTCPAddresses : 'localhost:4150' });
+var w1 = new nsq.Writer('127.0.0.1', 4150);
+var w2 = new nsq.Writer('127.0.0.1', 4150);
+
+/*
+	This function gets a request from access
+*/
+
+reader.connect();
+
+reader.on('message', function(msg) {
+
+	try {
+		var inJSON = JSON.parse(msg.body.toString());
+	}
+	catch (e)
+	{
+		msg.finish();
+		return;
+	}
+
+	console.log('Received message [%s] : %s', msg.id, inJSON);
+
+	var qType = inJSON.queryType;
+	console.log('Query Type : %s', qType);
+
+	if (qType == "getRoutes")
+	{
+		console.log('Start location : %s', inJSON.content.begin);
+		console.log('End location : %s', inJSON.content.end);
+
+		//call GIS OR cache function here
+		retrieveRoute(inJSON.content.begin, inJSON.content.end);
+	}
+	else if (qType == "gisReceiveRoutes")
+	{
+		console.log('\nReceived route from GIS!\n');
+		console.log('Start location of route: %s', inJSON.content.begin);
+		console.log('End location of route: %s', inJSON.content.end);
+		console.log('Middle / path of route: %s', inJSON.content.middle);
+
+		console.log('\nNow sending GIS route back to Access...\n');
+
+		var array = (inJSON.content.middle.toString()).split(',');
+		var middleString = '["';
+
+		for (i = 0; i < array.length; i++)
+		{
+			if (i == array.length - 1)
+			{
+				middleString += array[i] + '"]';
+			}
+			else
+			{
+				middleString += array[i] + '", "';
+			}
+		}
+
+		console.log('Middle string: %s', middleString);
+
+		var request = '{"src": "Navigation", "dest": "Access", "msgType": "request", "queryType": "navRoutes", "content": {"begin": "Humanities", "end": "Law", "middle": ' + middleString + '}}';
+
+		w2.connect();
+
+		w2.on('ready', function () {
+		  //# Simple publish method call. Publishes to users topic
+		  
+			console.log('\nNav Writer opened');
+			w2.publish('access', request);
+			console.log('Route request sent to ACCESS...');
+
+		});
+
+		w2.on('closed', function () {
+			console.log('Nav Writer closed\n');
+		});
+	}
+
+	msg.finish();
 });
 
-//this function is called from Access. Here we get route either from cache or from GIS
+//this function is called from by Access. Here we get route either from cache or from GIS
 function retrieveRoute(inStart, inEnd) {
     /*
     	Here the client will (in the final draft) be communicating with either:
@@ -49,63 +114,42 @@ function retrieveRoute(inStart, inEnd) {
     });
 	*/
 	
-	checkForAvailableRoute(inStart, inEnd);		//this is OUR function to get route from cache
-	//sendStartAndEndToGIS(inStart, inEnd);		//this is function to call GIS to give route
+	//checkForAvailableRoute(inStart, inEnd);		//this is OUR function to get route from cache
 
-    console.log("Route successfully retrieved.");
-	
-    return sendStartAndEndToGIS(inStart, inEnd);		//this is function to call GIS to give route
+	sendStartAndEndToGIS(inStart, inEnd);
 }
 
-//this function will send a get request to the gis with the json object containing end and start point
-function sendStartAndEndToGIS(start_,end_){
-    request.post(
-		'http://127.0.0.1:5000/getJsonFromNav', 
-        { json: { start: start_, end: end_ } },
-        function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //console.log(body)
-                console.log("\Route received (from start to finish):\n");
-                console.log("Start: "  + response.body.start);
-                console.log("Middle: " + response.body.middle);
-                console.log("End: " + response.body.end);
-            }
-        }
-    );
+/*
+	@Todo: sendStartAndEndToGIS sends a request to GIS with the json object containing end and start point
+
+	!!!IMPORTANT!!!
+
+		"queryType" MUST BE "gisGetRoutes"
+
+	!!!!!!!!!!!!!!!
+*/
+
+function sendStartAndEndToGIS(start_, end_) {
+	console.log('\nSending route request to GIS...');
+
+	var request = '{"src": "Navigation", "dest": "Gis", "msgType": "request", "queryType": "gisGetRoutes", "content": {"begin": "' + start_ +'", "end": "' + end_ + '"}}';
+
+	w1.connect();
+
+	w1.on('ready', function () {
+	  //# Simple publish method call. Publishes to users topic
+	  
+		console.log('Nav Writer opened');
+		w1.publish('gis', request);
+		console.log('Route request sent to GIS...');
+
+		w1.close();
+	});
+
+	w1.on('closed', function () {
+		console.log('Nav Writer closed\n');
+	});
 }
-
-//===========================================================================================================
-//This is an example funciton of how GIS can receive the get request sent above
-app.post('/getJsonFromNav', function(req, res) {
-	'use strict';
-	var start = req.body.start;
-	var end = req.body.end;   
-	
-	console.log("\nRoute calculation Request received from Navigation: ");
-	console.log("-------------------------------");
-	console.log("Start: " + start);
-	console.log("End: " + end);
-	console.log("\nNow calculating route...");
-
-	res.writeHead(200, { "Content-Type": "application/json" });
-	res.end(calculateRoute(start, end));       //replace this with GIS route calculating function that returns JSON object
-});
-
-function calculateRoute(inStart, inEnd) {
-	
-	//{"_id":"58e3e097bea9a52e44fd20e6","routeID":"1","beginPoint":"Humanities","endPoint":"Law","waypoints":[{"name":"Piazza"},{"name":"TuksFm"},{"name":"Centenary"}]}
-	
-    var json = JSON.stringify({
-        start: inStart,
-        middle: ["Piazza", "TuksFm", "Centenary"],
-        end: inEnd
-    });
-
-    console.log("Route successfully calculated HERE IN GIS.");
-	
-    return json;
-}
-//===========================================================================================================
 
 //===========================================================================
 //	CASHING CODE:
