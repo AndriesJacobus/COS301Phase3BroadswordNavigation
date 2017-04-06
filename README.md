@@ -51,7 +51,16 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 </ol>
 
 <h3><b>Compile notes:</b></h3>
-<ul>
-	<li>Example code to send a request to Navigation from Access for example is given in the file "Nav Node Server/sendRequest.js"</li>
-	<li>Example code to receive a request by GIS from Navigation to get a route, is given in the file "Nav Node Server/index.js" - search for the relevant comment</li>
-</ul>
+<h4>Example code has been given on how the other modules can communicate with Navigation and how Navigation expects them to communicate back.
+<br/>
+<br/>
+Running a full demo with only the examples can be done simply by using the following steps:</h4>
+
+<ol>
+	<li>Start an nsq server by using makefile command "make test-comms"</li>
+	<li>Start "Nav Node Server > index.js"</li>
+	<li>Start "Nav Node Server > nsqExampleAccess.js"</li>
+	<li>Start "Nav Node Server > nsqExampleGIS.js"</li>
+</ol>
+
+<b>Note: Whenever index.js is terminated via the command prompt, a new terminal should be opened and the index.js file should be run again from scratch.</b>
