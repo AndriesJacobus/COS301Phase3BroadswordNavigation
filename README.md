@@ -50,11 +50,9 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 	<li>Navigate to "Nav Node Server" directory and run index.js to start server</li>
 </ol>
 
-<h3><b>Compile notes:</b></h3>
-<h4>Example code has been given on how the other modules can communicate with Navigation and how Navigation expects them to communicate back.</h4>
-<br/>
-<br/>
-Running a full demo with only the examples can be done simply by using the following steps:</h4>
+<h3>Example code has been given on how the other modules can communicate with Navigation and how Navigation expects them to communicate back.</h3>
+<h3>Compile notes:</h3>
+<p>Running a full demo with only the examples can be done simply by using the following steps:</p>
 
 <ol>
 	<li>Start an nsq server by using makefile command "make test-comms"</li>
