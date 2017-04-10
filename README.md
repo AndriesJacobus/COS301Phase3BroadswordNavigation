@@ -40,3 +40,25 @@ COS 301 Team Broadsword navigation
 </table>
 
 The Broadsword team will be responsible for the implementation of the Web Navigation system.
+
+<br/>
+<h2><b>How to compile:</b></h2>
+
+<ol>
+	<li>Start MongoDB</li>
+	<li>Run navigationLocal.js in main branch directory</li>
+	<li>Navigate to "Nav Node Server" directory and run index.js to start server</li>
+</ol>
+
+<h3>Example code has been given on how the other modules can communicate with Navigation and how Navigation expects them to communicate back.</h3>
+<h3>Compile notes:</h3>
+<p>Running a full demo with only the examples can be done simply by using the following steps:</p>
+
+<ol>
+	<li>Start an nsq server by using makefile command "make test-comms"</li>
+	<li>Start "Nav Node Server > index.js" (example screenshot under img/captureOne.jpg)</li>
+	<li>Start "Nav Node Server > nsqExampleAccess.js" (example screenshot under img/captureTwo.jpg)</li>
+	<li>Start "Nav Node Server > nsqExampleGIS.js" (example screenshot under img/captureThree.jpg)</li>
+</ol>
+
+<b>Note: Whenever index.js is terminated via the command prompt, a new terminal should be opened and the index.js file should be run again from scratch.</b>
