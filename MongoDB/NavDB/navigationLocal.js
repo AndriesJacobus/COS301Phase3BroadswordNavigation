@@ -1,133 +1,71 @@
 var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/NavgationDatabase';
 
-//====================================================================================================
+//-----------------------------------------------------------
+//         Variables Needed For Cached Paths Searching
+//-----------------------------------------------------------
+var paths = [];
+var resultsLength;
+var cachedStatus = false;
+// ----------------------------------------------------------
 
-var addNewRoute = function(db, callback) {
-    db.collection('routes').insertOne({
-        "routeID": "1",
-        "beginPoint": "Humanities",
-        "endPoint": "Law",
-        "waypoints": [{
-                "name": "Piazza",
-            },
-            {
-                "name": "TuksFm",
-            },
-            {
-                "name": "Centenary",
+
+
+getCachedRoutes("Humanities", "Law");
+console.log("getCachedRoutes() called.\n");
+
+
+console.log("===========================================");
+console.log("The Path Returned");
+console.log("===========================================");
+console.log("Route available : " + cachedStatus);
+console.log("===========================================");
+console.log(paths); // This needs to be returned as local variable, but gets called before the async method and thus is set to undefied
+console.log("===========================================\n");
+
+function getCachedRoutes(beginPoint, endPoint) {
+    searchRouteInCachedRoutes(beginPoint, endPoint);
+    return cachedStatus; // Indicate if we habe the route cached or not.
+}
+
+function searchRouteInCachedRoutes(beginPoint, endPoint) {
+    //=================================================================================================
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
+            try {
+                //console.log(JSON.stringify(results));
+                resultsLength = results.length;
+                console.log("The amount of results returned are : " + resultsLength);
+
+                for (var i = 0; i < resultsLength; i++) {
+                    var bp = results[i]['beginPoint'];
+                    var ep = results[i]['endPoint'];
+
+                    if (beginPoint == bp && endPoint == ep) { // Traverse the results and see if any of them have the same start and endpoints as the requested ones.
+                        cachedStatus = true;
+                        paths.push(results[i]);
+                    }
+                }
+                if (cachedStatus == true) {
+                    console.log("We have the route cached."); // Indicate that we have a cached route available.
+                    console.log("Route available : " + cachedStatus);
+                    for (var i = 0; i < paths.length; i++) {
+                        console.log(JSON.stringify(paths[i])); // Display the routes that are available based on the start and endpoint.
+                    }
+
+                } else
+                    console.log("The route was not cahced and needs to be calculated.");
+
+            } catch (error) {
+                console.log("No cached routes listed with specified starting point.");
             }
-        ]
-    }, function(err, result) {
-        assert.equal(err, null);
-        console.log("User preferences have been saved.");
-        callback();
+        });
+
+        db.close();
+
     });
-};
+    //=================================================================================================
 
-//====================================================================================================
-
-var addUserPreferences = function(db, callback) {
-    db.collection('userpreferences').insertOne({
-        "userID": "14307317",
-        "preferences": [{
-                "type": "stairs",
-                "preferred": "false"
-            },
-            {
-                "type": "shortestroute",
-                "preferred": "true"
-            },
-            {
-                "type": "minimaltraffic",
-                "preferred": "true"
-            }
-        ]
-    }, function(err, result) {
-        assert.equal(err, null);
-        console.log("User preferences have been saved.");
-        callback();
-    });
-};
-
-//====================================================================================================
-
-var findUser = function(db, callback) {
-    var cursor = db.collection('userpreferences').find();
-    cursor.each(function(err, doc) {
-        assert.equal(err, null);
-        if (doc != null) {
-            console.dir(doc);
-        } else {
-            callback();
-        }
-    });
-};
-
-//====================================================================================================
-
-var findSpecificUser = function(db, callback) {
-    var cursor = db.collection('userpreferences').find({ "userID": "14307317" });
-    cursor.each(function(err, doc) {
-        assert.equal(err, null);
-        if (doc != null) {
-            console.dir(doc);
-        } else {
-            callback();
-        }
-    });
-};
-
-//====================================================================================================
-
-var displaySpecificRoute = function(db, callback) {
-    var cursor = db.collection('routes').find({ "routeID": "1" });
-    cursor.each(function(err, doc) {
-        assert.equal(err, null);
-        if (doc != null) {
-            console.dir(doc);
-        } else {
-            callback();
-        }
-    });
-};
-
-//====================================================================================================
-
-var updateUserPreference = function(db, callback) {
-    db.collection('userpreferences').updateOne({ "userID": "14307317" }, {
-        $set: { "preferences": "" }
-    }, function(err, results) {
-        console.log(results);
-        callback();
-    });
-};
-
-//====================================================================================================
-
-var removeUserData = function(db, callback) {
-    db.collection('userpreferences').deleteOne({ "userID": "14307317" },
-        function(err, results) {
-            console.log(results);
-            callback();
-        }
-    );
-};
-
-//====================================================================================================
-//====================================================================================================
-
-MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    // addUserPreferences(db, function() {}); // This will be used to insert a new User with preferences into the DataBase
-    // findUser(db, function() {}); // This will return all the users in the UserPreferences collection
-    //findSpecificUser(db, function() {}); // This will return a specific user and their preferences.
-    //addNewRoute(db, function() {});
-    displaySpecificRoute(db, function() {});
-    //updateUserPreference(db, function() {});
-    // removeUserData(db, function() {}); // Delete a user and all their data.
-
-    db.close();
-});
+}
