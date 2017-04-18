@@ -5,10 +5,6 @@ const Preference = require('../models/preference')
 //get a list of users preferences from the database
 router.get('/preferences/:id', function(req, res, next){
     Preference.find({userID: req.params.id}).then(function(preferences){
-      if(preferences.length > 0)
-      {
-        
-      }
       res.send(preferences);
     });
 });
@@ -39,4 +35,5 @@ router.delete('/preferences/:id', function(req, res, next){
     });
 });
 
+//Allows ability to import in index
 module.exports = router;
