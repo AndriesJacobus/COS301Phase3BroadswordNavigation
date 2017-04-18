@@ -5,143 +5,145 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/NavgationDatabase';
 
-var data = {
-  "data": [
-    {
-      "type": "locations",
-      "id": "1",
-      "attributes": {
-        "location_type": "Venue",
-        "room": "2-27",
-        "building": "IT",
-        "lng": -25.75599,
-        "lat": 28.233137,
-        "level": 2,
-        "ground": 2
-      }
-    },
-    {
-      "type": "locations",
-      "id": "2",
-      "attributes": {
-        "location_type": "Entrance",
-        "room": "N/A",
-        "building": "IT",
-        "lng": -25.755869,
-        "lat": 28.233144,
-        "level": 2,
-        "ground": 2
-      }
-    },
-    {
-      "type": "locations",
-      "id": "3",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755836,
-        "lat": 28.233162,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "4",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755811,
-        "lat": 28.233266,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "5",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755712,
-        "lat": 28.233275,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "6",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755623,
-        "lat": 28.233404,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "7",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755567,
-        "lat": 28.233193,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "8",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755528,
-        "lat": 28.233166,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "9",
-      "attributes": {
-        "location_type": "Point",
-        "room": "N/A",
-        "building": "N/A",
-        "lng": -25.755358,
-        "lat": 28.233218,
-        "level": 0,
-        "ground": 0
-      }
-    },
-    {
-      "type": "locations",
-      "id": "10",
-      "attributes": {
-        "location_type": "Entrance",
-        "room": "N/A",
-        "building": "EMB",
-        "lng": -25.755391,
-        "lat": 28.233297,
-        "level": 2,
-        "ground": 2
-      }
-    }
-  ]
-}
+
+//Mock data
+// var data = {
+//   "data": [
+//     {
+//       "type": "locations",
+//       "id": "1",
+//       "attributes": {
+//         "location_type": "Venue",
+//         "room": "2-27",
+//         "building": "IT",
+//         "lng": -25.75599,
+//         "lat": 28.233137,
+//         "level": 2,
+//         "ground": 2
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "2",
+//       "attributes": {
+//         "location_type": "Entrance",
+//         "room": "N/A",
+//         "building": "IT",
+//         "lng": -25.755869,
+//         "lat": 28.233144,
+//         "level": 2,
+//         "ground": 2
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "3",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755836,
+//         "lat": 28.233162,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "4",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755811,
+//         "lat": 28.233266,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "5",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755712,
+//         "lat": 28.233275,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "6",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755623,
+//         "lat": 28.233404,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "7",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755567,
+//         "lat": 28.233193,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "8",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755528,
+//         "lat": 28.233166,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "9",
+//       "attributes": {
+//         "location_type": "Point",
+//         "room": "N/A",
+//         "building": "N/A",
+//         "lng": -25.755358,
+//         "lat": 28.233218,
+//         "level": 0,
+//         "ground": 0
+//       }
+//     },
+//     {
+//       "type": "locations",
+//       "id": "10",
+//       "attributes": {
+//         "location_type": "Entrance",
+//         "room": "N/A",
+//         "building": "EMB",
+//         "lng": -25.755391,
+//         "lat": 28.233297,
+//         "level": 2,
+//         "ground": 2
+//       }
+//     }
+//   ]
+// }
 
 
-data = JSON.stringify(data);
+// data = JSON.stringify(data);
 
 // console.log(data);
 
@@ -194,6 +196,13 @@ function distance(lat1, lon1, lat2, lon2)
     return dist.toFixed(2);
 }
 
+
+/*************************************************************************************
+*   This function calls the helper function to format the JSON data and inserts
+*   it into the mongo db database.
+*   This funciton takes the starting point, end point, the JSON route string,
+*   the database and a callback function
+*************************************************************************************/
 var addRoute = function(startPoint, endPoint, jsonData, db, callback)
 {
     jsonData = formatData(jsonData, startPoint, endPoint);
