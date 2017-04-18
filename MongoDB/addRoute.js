@@ -147,20 +147,35 @@ data = JSON.stringify(data);
 /************************************************************************************
 *   This function formats the route data received from GIS
 *   This function takes one parameter jsonData being the JSON string received
+*   from GIS and the names of the start and end points
 *   This function extracts the latitude and longitude and calls the helper
 *   function to calculate the distance. The start point, end point and distance
 *   is then added to the JSON object which is then returned
 ************************************************************************************/
-function formatData(jsonData)
+function formatData(jsonData, startPoint, endPoint)
 {
     // console.log(jsonData);
+    jsonData = JSON.parse(jsonData);
+    var lat1 = jsonData.data[0].attributes.lat;
+    var lng1 = jsonData.data[0].attributes.lng;
+    // console.log(lat1 + "\n" + lng1)
+    var lat2 = jsonData.data[jsonData.data.length-1].attributes.lat;
+    var lng2 = jsonData.data[jsonData.data.length-1].attributes.lng;
+    // console.log(lat2 + "\n" + lng2)
+    var dist = distance(lat1, lng1, lat2, lng2);
+    jsonData.start = startPoint;
+    jsonData.end = endPoint;
+    jsonData.distance = dist;
+
+    console.log(jsonData);
+    return jsonData;
 }
 
 /*************************************************************************************
 *   This function calculates the distance between 2 coordinates.
 *   lat1, lat2 = the decimal latitudinal value
 *   lon1, lon2 = the decumal longitudinal value
-*   this function returns the distance in metres
+*   This function returns the distance in metres fixed at 2 decimal places
 *************************************************************************************/
 function distance(lat1, lon1, lat2, lon2) 
 {
@@ -174,12 +189,12 @@ function distance(lat1, lon1, lat2, lon2)
     dist = dist * 60 * 1.1515
     dist = dist * 1.609344
     dist = dist * 1000;
-    return dist
+    return dist.toFixed(2);
 }
 
 // var addRoute = function(startPoint, endPoint, jsonData, db, callback)
 // {
-//     jsonData = parseData(jsonData);
+//     jsonData = formatData(jsonData, startPoint, endPoint);
 
 //     db.collection('routes').insertOne(jsonData,
 //         function(err, results) {
@@ -189,7 +204,7 @@ function distance(lat1, lon1, lat2, lon2)
 //     );
 // }
 
-parseData(data);
+formatData(data, "IT 2-27", "EMB");
 
 // MongoClient.connect(url, function(err, db) {
 //     assert.equal(null, err);
