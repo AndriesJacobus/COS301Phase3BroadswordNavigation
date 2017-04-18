@@ -1,4 +1,9 @@
-{
+// var MongoClient = require('mongodb').MongoClient;
+// var assert = require('assert');
+// var ObjectId = require('mongodb').ObjectID;
+// var url = 'mongodb://localhost:27017/NavgationDatabase';
+
+var data = {
   "data": [
     {
       "type": "locations",
@@ -132,3 +137,63 @@
     }
   ]
 }
+
+
+data = JSON.stringify(data);
+
+// console.log(data);
+
+
+/************************************************************************************
+*   This function formats the route data received from GIS
+*   This function takes one parameter jsonData being the JSON string received
+*   This function extracts the latitude and longitude and calls the helper
+*   function to calculate the distance. The start point, end point and distance
+*   is then added to the JSON object which is then returned
+************************************************************************************/
+function formatData(jsonData)
+{
+    console.log(jsonData);
+}
+
+/*************************************************************************************
+*   This function calculates the distance between 2 coordinates.
+*   lat1, lat2 = the decimal latitudinal value
+*   lon1, lon2 = the decumal longitudinal value
+*   this function returns the distance in metres
+*************************************************************************************/
+function distance(lat1, lon1, lat2, lon2) 
+{
+    var radlat1 = Math.PI * lat1/180
+    var radlat2 = Math.PI * lat2/180
+    var theta = lon1-lon2
+    var radtheta = Math.PI * theta/180
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist)
+    dist = dist * 180/Math.PI
+    dist = dist * 60 * 1.1515
+    dist = dist * 1.609344
+    dist = dist * 1000;
+    return dist
+}
+
+// var addRoute = function(startPoint, endPoint, jsonData, db, callback)
+// {
+//     jsonData = parseData(jsonData);
+
+//     db.collection('routes').insertOne(jsonData,
+//         function(err, results) {
+//             console.log(results);
+//             callback();
+//         }
+//     );
+// }
+
+parseData(data);
+
+// MongoClient.connect(url, function(err, db) {
+//     assert.equal(null, err);
+//     addRoute(data, db, function() {});
+
+//     db.close();
+// });
