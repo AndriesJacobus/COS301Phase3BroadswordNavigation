@@ -1,7 +1,9 @@
-// var MongoClient = require('mongodb').MongoClient;
-// var assert = require('assert');
-// var ObjectId = require('mongodb').ObjectID;
-// var url = 'mongodb://localhost:27017/NavgationDatabase';
+//"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe"
+
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
+var url = 'mongodb://localhost:27017/NavgationDatabase';
 
 var data = {
   "data": [
@@ -192,23 +194,23 @@ function distance(lat1, lon1, lat2, lon2)
     return dist.toFixed(2);
 }
 
-// var addRoute = function(startPoint, endPoint, jsonData, db, callback)
-// {
-//     jsonData = formatData(jsonData, startPoint, endPoint);
+var addRoute = function(startPoint, endPoint, jsonData, db, callback)
+{
+    jsonData = formatData(jsonData, startPoint, endPoint);
 
-//     db.collection('routes').insertOne(jsonData,
-//         function(err, results) {
-//             console.log(results);
-//             callback();
-//         }
-//     );
-// }
+    db.collection('routes').insertOne(jsonData,
+        function(err, results) {
+            console.log(results);
+            callback();
+        }
+    );
+}
 
-formatData(data, "IT 2-27", "EMB");
+// formatData(data, "IT 2-27", "EMB");
 
-// MongoClient.connect(url, function(err, db) {
-//     assert.equal(null, err);
-//     addRoute(data, db, function() {});
+MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    addRoute("IT2-27", "EMB", data, db, function() {});
 
-//     db.close();
-// });
+    db.close();
+});
