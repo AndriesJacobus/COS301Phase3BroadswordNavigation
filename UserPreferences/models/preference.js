@@ -7,12 +7,14 @@ const PreferenceSchema = new Schema({
       type: String,
       required: [true, 'Name field is required']
     },
-    preferenceName: {
-      type: String
-    },
-    preferenceDescription: {
-      type: String
-    }
+
+    stairs: {type: Boolean},
+    elevator:{type: Boolean},
+    genderMale:{type: Boolean},
+    mostPopular:{type: Boolean},
+    leastTraffic:{type: Boolean},
+    shortestPath:{type: Boolean}
+
 });
 
 const Preference = mongoose.model('preference', PreferenceSchema);
