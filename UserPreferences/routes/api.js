@@ -1,3 +1,4 @@
+//initial setup
 const express = require('express');
 const router = express.Router();
 const Preference = require('../models/preference')
@@ -11,9 +12,6 @@ router.get('/preferences/:id', function(req, res, next){
 
 //add new user preference to the db
 router.post('/preferences', function(req, res, next){
-    //var preference = new Preference(req.body);
-    //preference.save();
-    //**above 2 lines are replaced by the one below
     Preference.create(req.body).then(function(preference){
       res.send(preference);
     }).catch(next);
@@ -91,3 +89,38 @@ router.delete('/preferences/:id', function(req, res, next){
 
 //Allows ability to import in index
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

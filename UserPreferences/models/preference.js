@@ -1,3 +1,4 @@
+//initial setup
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -34,6 +35,36 @@ const PreferenceSchema = new Schema({
 
 });
 
+//create model after the schema
 const Preference = mongoose.model('preference', PreferenceSchema);
 
+//this is so that it can be included elsewhere
 module.exports = Preference;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
