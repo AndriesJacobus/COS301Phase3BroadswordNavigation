@@ -8,22 +8,28 @@ const PreferenceSchema = new Schema({
       required: [true, 'Name field is required']
     },
     stairs: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     elevator: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     genderMale: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     mostPopular: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     leastTraffic: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     shortestPath: {
-      type: Boolean
+      type: Boolean,
+      default: false
     }
 
 });
