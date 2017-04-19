@@ -23,7 +23,7 @@ var w2 = new nsq.Writer('127.0.0.1', 4150);
 var flagForCache = false;
 
 /*
-	This function gets a request from access
+	This function gets a requests from Access and GIS
 */
 
 reader.connect();
@@ -66,7 +66,6 @@ reader.on('message', function(msg) {
 			console.log('\nReceived route from GIS!\n');
 			console.log('Start location of route: %s', inJSON.content.start);
 			console.log('End location of route: %s', inJSON.content.end);
-			//console.log('Middle / path of route: %s', inJSON.data);
 
 			console.log('\nNow sending GIS route back to Access...\n');
 
@@ -99,22 +98,9 @@ reader.on('message', function(msg) {
 //this function is called from by Access. Here we get route either from cache or from GIS
 function retrieveRoute(inStart, inEnd) {
     /*
-    	Here the client will (in the final draft) be communicating with either:
+    	Here the client will be communicating with either:
     	1) The DB to get the route if it already exists
     	2) The path finding algorithm to create a new path AND then store it to DB
-		
-		IMPORTANT:
-		
-		For now, retrieving cached routes does not work properly: it can retrieve route but route can't 
-		be saved in persistant variable since MongoClient.connect is asynchronous
-    */
-	
-	/*
-    var json = JSON.stringify({
-        start: inStart,
-        middle: ["EMS Lecture Halls", "Conference Centre"],
-        end: inEnd
-    });
 	*/
 
 	sendStartAndEndToGIS(inStart, inEnd);
@@ -293,10 +279,6 @@ function validationContinued(routeFromGIS)
 			        var t = data.split('The route is available in local storage. Path is being returned.')[1];
 			        var cacheJSON = JSON.parse(t.toString());
 
-		            //console.log("\n\nGIS Data: " + inFromGIS);
-		            //console.log("\nReader data: " + JSON.stringify(cacheJSON.data));
-		            // console.log("\nCached start: " + JSON.stringify(cacheJSON.start));
-
 			        if (inFromGIS == JSON.stringify(cacheJSON.data))
 			        {
 			        	console.log("Cahed route is correct - don't change.");
@@ -360,23 +342,22 @@ function validationContinued(routeFromGIS)
 *   function to calculate the distance. The start point, end point and distance
 *   is then added to the JSON object which is then returned
 ************************************************************************************/
+
 function formatData(jsonData, startPoint, endPoint)
 {
-    //console.log("\n\nJsonData: " + jsonData);
-
     jsonData = JSON.parse(jsonData);
     var lat1 = jsonData.data[0].attributes.lat;
     var lng1 = jsonData.data[0].attributes.lng;
-    // console.log(lat1 + "\n" + lng1)
+	
     var lat2 = jsonData.data[jsonData.data.length-1].attributes.lat;
     var lng2 = jsonData.data[jsonData.data.length-1].attributes.lng;
-    // console.log(lat2 + "\n" + lng2)
+	
     var dist = distance(lat1, lng1, lat2, lng2);
+	
     jsonData.start = startPoint;
     jsonData.end = endPoint;
     jsonData.distance = dist;
-
-    //console.log(jsonData);
+	
     return jsonData;
 }
 
@@ -386,6 +367,7 @@ function formatData(jsonData, startPoint, endPoint)
 *   lon1, lon2 = the decumal longitudinal value
 *   This function returns the distance in metres fixed at 2 decimal places
 *************************************************************************************/
+
 function distance(lat1, lon1, lat2, lon2) 
 {
     var radlat1 = Math.PI * lat1/180
@@ -401,13 +383,13 @@ function distance(lat1, lon1, lat2, lon2)
     return dist.toFixed(2);
 }
 
-
 /*************************************************************************************
 *   This function calls the helper function to format the JSON data and inserts
 *   it into the mongo db database.
 *   This funciton takes the starting point, end point, the JSON route string,
 *   the database and a callback function
 *************************************************************************************/
+
 var addRoute = function (startPoint, endPoint, jsonData, db, callback)
 {
     jsonData = formatData(jsonData, startPoint, endPoint);
