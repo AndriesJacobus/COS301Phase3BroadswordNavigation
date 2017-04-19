@@ -15,7 +15,7 @@ var w = new nsq.Writer('127.0.0.1', 4150);
 
 w.connect();
 
-var request = '{"src": "Access", "dest": "Navigation", "msgType": "request", "queryType": "getRoutes", "content": {"begin": "Humanities", "end": "Law"}}';
+var request = '{"src": "Access", "dest": "Navigation", "msgType": "request", "queryType": "getRoutes", "content": {"begin": "IT2-27", "end": "EMB"}}';
 
 w.on('ready', function () {
 	//# Simple publish method call. Publishes to users topic
@@ -40,6 +40,7 @@ reader.on('message', function(msg) {
 	}
 	catch (e)
 	{
+		console.log('There was a problem: ' + e);
 		msg.finish();
 		return;
 	}
@@ -51,9 +52,9 @@ reader.on('message', function(msg) {
 
 	if (qType == "navRoutes")
 	{
-		console.log('Start location FROM NAVIGATION: %s', inJSON.content.begin);
+		console.log('Start location FROM NAVIGATION: %s', inJSON.content.start);
 		console.log('End FROM NAVIGATION: %s', inJSON.content.end);
-		console.log('Middle / path of route FROM NAVIGATION: %s', inJSON.content.middle);
+		console.log('Middle / path of route FROM NAVIGATION: %s', inJSON.content.data);
 	}
 
 	msg.finish();

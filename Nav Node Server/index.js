@@ -6,7 +6,11 @@ var http=require('http');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/NavgationDatabase';
+var assert = require('assert');
 var port = 5000;
+
+const routes = require('./routes/api');
+const mongoose = require('mongoose');
 
 var app = express();
 app.use(bodyParser.json());
@@ -16,6 +20,8 @@ var reader = new nsq.Reader('navigation', 'navup', { lookupdHTTPAddresses : '127
 var w1 = new nsq.Writer('127.0.0.1', 4150);
 var w2 = new nsq.Writer('127.0.0.1', 4150);
 
+var flagForCache = false;
+
 /*
 	This function gets a request from access
 */
@@ -24,7 +30,8 @@ reader.connect();
 
 reader.on('message', function(msg) {
 
-	try {
+	try
+	{
 		var inJSON = JSON.parse(msg.body.toString());
 	}
 	catch (e)
@@ -48,46 +55,42 @@ reader.on('message', function(msg) {
 	}
 	else if (qType == "gisReceiveRoutes")
 	{
-		console.log('\nReceived route from GIS!\n');
-		console.log('Start location of route: %s', inJSON.content.begin);
-		console.log('End location of route: %s', inJSON.content.end);
-		console.log('Middle / path of route: %s', inJSON.content.middle);
-
-		console.log('\nNow sending GIS route back to Access...\n');
-
-		var array = (inJSON.content.middle.toString()).split(',');
-		var middleString = '["';
-
-		for (i = 0; i < array.length; i++)
+		if (flagForCache)
 		{
-			if (i == array.length - 1)
-			{
-				middleString += array[i] + '"]';
-			}
-			else
-			{
-				middleString += array[i] + '", "';
-			}
+			//This response was for cache validation purposes
+			flagForCache = false;
+			validationContinued(inJSON.content.data);
 		}
+		else
+		{
+			console.log('\nReceived route from GIS!\n');
+			console.log('Start location of route: %s', inJSON.content.start);
+			console.log('End location of route: %s', inJSON.content.end);
+			//console.log('Middle / path of route: %s', inJSON.data);
 
-		console.log('Middle string: %s', middleString);
+			console.log('\nNow sending GIS route back to Access...\n');
 
-		var request = '{"src": "Navigation", "dest": "Access", "msgType": "request", "queryType": "navRoutes", "content": {"begin": "Humanities", "end": "Law", "middle": ' + middleString + '}}';
+			var request = '{"src": "Navigation", "dest": "Access", "msgType": "request", "queryType": "navRoutes", "content": {"begin": "' + inJSON.content.start.toString() + '", "end": "' + inJSON.content.end.toString() + '", "data": ' + JSON.stringify(inJSON.content.data) + '}}';
 
-		w2.connect();
+			w2.connect();
 
-		w2.on('ready', function () {
-		  //# Simple publish method call. Publishes to users topic
-		  
-			console.log('\nNav Writer opened');
-			w2.publish('access', request);
-			console.log('Route request sent to ACCESS...');
+			w2.on('ready', function () {
+			  //# Simple publish method call. Publishes to users topic
+			  
+				console.log('\nNav Writer opened');
+				w2.publish('access', request);
+				console.log('Route request sent to ACCESS...');
 
-		});
+			});
 
-		w2.on('closed', function () {
-			console.log('Nav Writer closed\n');
-		});
+			w2.on('closed', function () {
+				console.log('Nav Writer closed\n');
+
+				//Important to note: at the moment GIS isn't returning any valid routes, so this system is commented out:
+
+				//validateCachedRouteFor(inJSON.content.start, inJSON.content.end);
+			});
+		}
 	}
 
 	msg.finish();
@@ -113,8 +116,6 @@ function retrieveRoute(inStart, inEnd) {
         end: inEnd
     });
 	*/
-	
-	//checkForAvailableRoute(inStart, inEnd);		//this is OUR function to get route from cache
 
 	sendStartAndEndToGIS(inStart, inEnd);
 }
@@ -158,91 +159,298 @@ function sendStartAndEndToGIS(start_, end_) {
 //-----------------------------------------------------------
 //         Variables Needed For Cached Paths Searching
 //-----------------------------------------------------------
-var paths = [];
-var resultsLength;
-var cachedStatus = false;
+var pathResolve;
+var cachedRouteAvalilable = false; // Default to no route available in cache.
+var pathReturned = [];
 // ----------------------------------------------------------
 
-function checkForAvailableRoute(beginPointCordinate, endPointCoordinate) {
-	//some test code
-	getCachedRoutes(beginPointCordinate, endPointCoordinate);
-	console.log("getCachedRoutes() called.\n");
+// Function to allow promise variable to be created exturnally with the resolution specified below.
+var localPatths = new Promise((resolve, reject) => {
+    pathResolve = resolve;
+});
 
-	/*
-	console.log("===========================================");
-	console.log("The Path Returned");
-	console.log("===========================================");
-	console.log("Route available : " + cachedStatus);
-	console.log("===========================================");
-	console.log(paths); // This needs to be returned as local variable, but gets called before the async method and thus is set to undefied
-	console.log("===========================================\n");
-	*/
-	
-	//for now, return mock data, since caching doesn't fully work
-    var json = JSON.stringify({
-        start: beginPointCordinate,
-        middle: ["Piazza", "TuksFm", "Centenary"],
-        end: endPointCoordinate
-    });
-
-    return json;
-}
-
-function getCachedRoutes(beginPoint, endPoint) {
-    searchRouteInCachedRoutes(beginPoint, endPoint);
-    return cachedStatus; // Indicate if we have the route cached or not.
-}
-
-function searchRouteInCachedRoutes(beginPoint, endPoint) {
+function checkForCahcedRoute(beginPoint, endPoint) {
     MongoClient.connect(url, function(err, db) {
-        db.collection('routes').find({ "beginPoint": beginPoint }).toArray(function(err, results) {
+        db.collection('routes').find({ "start": beginPoint }).toArray(function(err, results) {
             try {
-                //console.log(JSON.stringify(results));
-                resultsLength = results.length;
-                console.log("\nThe amount of results returned FROM CACHE are : " + resultsLength);
-
-                for (var i = 0; i < resultsLength; i++) {
-                    var bp = results[i]['beginPoint'];
-                    var ep = results[i]['endPoint'];
-
-                    if (beginPoint == bp && endPoint == ep) { // Traverse the results and see if any of them have the same start and endpoints as the requested ones.
-                        cachedStatus = true;
-                        paths.push(results[i]);
-                    }
-                }
-                if (cachedStatus == true) {
-                    console.log("We have the route cached."); // Indicate that we have a cached route available.
-                    console.log("Route available : " + cachedStatus);
-                    for (var i = 0; i < paths.length; i++) {
-                        console.log(JSON.stringify(paths[i])); // Display the routes that are available based on the start and endpoint.
-						
-						/*
-						request.post(
-							'http://127.0.0.1:5000/getRouteFromCache',
-							paths[i],
-							function (error, response, body) {
-								if (!error && response.statusCode == 100) {
-								}
-								else {
-									return;
-								}
-							}
-						);
-						*/
-                    }
-	
-                } else
-                    console.log("The route was not cahced and needs to be calculated.");
-
+                var paths = [];
+                paths.push(results);
+                pathResolve(paths);
             } catch (error) {
-                console.log("No cached routes listed with specified starting point.");
+                console.log("========================================================");
+                console.log("Catch error occured when connecting to MongoClient to get query results");
+                console.log("========================================================");
+                console.log(error);
+                console.log("========================================================");
             }
         });
-
-        db.close();
-		
+        db.close(); // Close the DB connection
     });
+
+    return localPatths.then(pathConsumer(beginPoint, endPoint));
 }
+
+/*
+    The path consumer function is responsible for receiving the promise Object
+    called localPaths and enforces the .then() function on it to ensure that the
+    aysnc call has been completed to the database to get the path specified.
+    @params
+        bp - The begin point coordinate (in this case the string name)
+        ep - The end point coordinate (in this case the string name)
+*/
+function pathConsumer(bp, ep) {
+
+    localPatths.then(pathsArray => {
+
+        pathsArray.forEach(path => {
+
+            var beginPoint = path[0]['start'];
+            var endPoint = path[0]['end'];
+            if (beginPoint == bp && endPoint == ep)
+            {
+                pathReturned.push(path);
+                cachedRouteAvalilable = true;
+            }
+        })
+        localPatths.then(pathStatus()); // This will print out if the route was found or not based on the cachedRouteAvalilable status
+    })
+}
+
+function pathStatus() {
+	localPatths.then(function() {
+		var fs = require('fs');
+
+	    if (cachedRouteAvalilable)
+	    {
+	        console.log("The route is available in local storage. Path is being returned.");
+	        console.log("----------------------------------------------------------------");
+	        console.log(pathReturned[0][0]);
+	        console.log("----------------------------------------------------------------");
+
+	        var stream = fs.createWriteStream("cachedRoute.txt");
+	        stream.once('open', function(fd) {
+	            stream.write("cachedRouteAvalilable : True\n");
+	            stream.write("The route is available in local storage. Path is being returned.\n");
+	            stream.write(JSON.stringify(pathReturned[0][0]));
+	            stream.end();
+	        });
+	        
+	        fs.close();
+
+	    	validateCachedRouteFor("IT2-27", "EMB");
+	    }
+	    else
+	    {
+	        console.log("We do not have the path cached. Request the path from GIS.");
+	        var stream = fs.createWriteStream("cachedRoute.txt");
+
+	        stream.once('open', function(fd) {
+	            stream.write("cachedRouteAvalilable : False\n");
+	            stream.write("We do not have the path cached. Request the path from GIS.\n");
+	            //stream.write(JSON.stringify(pathReturned[0][0]) + "\ n ");
+	            stream.end();
+	        });
+	        
+	        fs.close();
+	    }
+    })
+}
+
+/*
+    @function validateCachedRouteFor:: validates specific cached route
+*/
+
+function validateCachedRouteFor(beginPoint, endPoint)
+{
+	flagForCache = true;
+
+	sendStartAndEndToGIS(beginPoint, endPoint);
+}
+
+function validationContinued(routeFromGIS)
+{
+	var inFromGIS = JSON.stringify(routeFromGIS);
+	checkForCahcedRoute("IT2-27", "EMB");
+
+	localPatths.then( function () {
+			//Now read waypoints from text and store in memory
+			console.log("Here");
+		    fs = require('fs');
+
+			fs.readFile('cachedRoute.txt', 'utf8', function (err,data)
+		    {
+		        if (err)
+		        {
+		            console.log("There was an error reading from routes: " + err);
+		            return;
+		        }
+		        if (data != "")
+		        {
+					console.log("Full data read: " + data);
+
+			        //read waypoints here
+
+			        var t = data.split('The route is available in local storage. Path is being returned.')[1];
+			        var cacheJSON = JSON.parse(t.toString());
+
+		            //console.log("\n\nGIS Data: " + inFromGIS);
+		            //console.log("\nReader data: " + JSON.stringify(cacheJSON.data));
+		            // console.log("\nCached start: " + JSON.stringify(cacheJSON.start));
+
+			        if (inFromGIS == JSON.stringify(cacheJSON.data))
+			        {
+			        	console.log("Cahed route is correct - don't change.");
+			        }
+			        else
+			        {
+			        	console.log("Cahed route is INcorrect - change needed.");
+
+			        	MongoClient.connect(url, function(err, db) {
+						    assert.equal(null, err);
+
+						    addRoute(
+					    		cacheJSON.start, 
+					    		cacheJSON.end, 
+					    		'{"data": ' + inFromGIS + "}", 
+					    		db, 
+					    		removeCachedRoute(
+							    	JSON.stringify(cacheJSON.start), 
+							    	db, 
+						    		function() 
+						    		{
+						    			console.log("Old cashed route deleted.");
+						    		}
+							    )
+					    	);					    
+
+						    db.close();
+						});
+			        }
+
+			        return;
+		        }
+		        else
+		        {
+		        	console.log("Adding new cached route");
+
+		        	MongoClient.connect(url, function(err, db) {
+					    assert.equal(null, err);
+
+					    addRoute(
+				    		cacheJSON.start, 
+				    		cacheJSON.end, 
+				    		'{"data": ' + inFromGIS + "}", 
+				    		db, 
+				    		function() {}
+				    	);					    
+
+					    db.close();
+					});
+		        }
+		    });
+		}
+	);
+}
+
+/************************************************************************************
+*   This function formats the route data received from GIS
+*   This function takes one parameter jsonData being the JSON string received
+*   from GIS and the names of the start and end points
+*   This function extracts the latitude and longitude and calls the helper
+*   function to calculate the distance. The start point, end point and distance
+*   is then added to the JSON object which is then returned
+************************************************************************************/
+function formatData(jsonData, startPoint, endPoint)
+{
+    //console.log("\n\nJsonData: " + jsonData);
+
+    jsonData = JSON.parse(jsonData);
+    var lat1 = jsonData.data[0].attributes.lat;
+    var lng1 = jsonData.data[0].attributes.lng;
+    // console.log(lat1 + "\n" + lng1)
+    var lat2 = jsonData.data[jsonData.data.length-1].attributes.lat;
+    var lng2 = jsonData.data[jsonData.data.length-1].attributes.lng;
+    // console.log(lat2 + "\n" + lng2)
+    var dist = distance(lat1, lng1, lat2, lng2);
+    jsonData.start = startPoint;
+    jsonData.end = endPoint;
+    jsonData.distance = dist;
+
+    //console.log(jsonData);
+    return jsonData;
+}
+
+/*************************************************************************************
+*   This function calculates the distance between 2 coordinates.
+*   lat1, lat2 = the decimal latitudinal value
+*   lon1, lon2 = the decumal longitudinal value
+*   This function returns the distance in metres fixed at 2 decimal places
+*************************************************************************************/
+function distance(lat1, lon1, lat2, lon2) 
+{
+    var radlat1 = Math.PI * lat1/180
+    var radlat2 = Math.PI * lat2/180
+    var theta = lon1-lon2
+    var radtheta = Math.PI * theta/180
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist)
+    dist = dist * 180/Math.PI
+    dist = dist * 60 * 1.1515
+    dist = dist * 1.609344
+    dist = dist * 1000;
+    return dist.toFixed(2);
+}
+
+
+/*************************************************************************************
+*   This function calls the helper function to format the JSON data and inserts
+*   it into the mongo db database.
+*   This funciton takes the starting point, end point, the JSON route string,
+*   the database and a callback function
+*************************************************************************************/
+var addRoute = function (startPoint, endPoint, jsonData, db, callback)
+{
+    jsonData = formatData(jsonData, startPoint, endPoint);
+
+    console.log("Adding: " + JSON.stringify(jsonData));
+
+    db.collection('routes').insertOne(jsonData,
+        function(err, results) {
+            //console.log(results);
+            //callback();
+            console.log("Cashed route updated.");
+        }
+    );
+}
+
+function removeCachedRoute (startPoint, db, callback) {
+
+    console.log("Deleting: " + startPoint);
+    db.collection('routes').remove({"start": startPoint},
+        function(err, results) {
+            //console.log(results);
+            callback();
+        }
+    );
+};
+
+//===========================================================================
+//	USER PREFERENCE CODE:
+//===========================================================================
+
+//initialize routes
+app.use('/api', routes);
+
+//error handling middleware
+app.use(function(err, req, res, next){
+  console.log(err);
+  res.status(422).send({error: err.message});
+});
+
+//listen for requests
+app.listen(process.env.port || 4000, function(){
+  console.log("Listening for requests");
+});
 
 var server = app.listen(port, function() {
     var host = server.address().address;
@@ -250,3 +458,11 @@ var server = app.listen(port, function() {
 
     console.log("App listening", host, port)
 })
+
+
+//***************************************************TEMP FOR NOW***************************************************
+//Important to note: at the moment GIS isn't returning any valid routes, so this system is commented out:
+
+//validateCachedRouteFor("IT2-27", "EMB");
+
+//***************************************************TEMP FOR NOW***************************************************
