@@ -48,13 +48,44 @@ router.delete('/preferences/:id', function(req, res, next){
   // }
   // else if(qType == "updateUserPreference")
   // {
+  //   console.log('userID : %s', inJSON.content.preferenceID);
   //   console.log('userID : %s', inJSON.content.preferenceObject);
-  //   updateUserPreference(inJSON.content.preferenceObject);
+  //   updateUserPreference(inJSON.content.preferenceID, inJSON.content.preferenceObject);
   // }
   // else if(qType == "deleteUserPreference")
   // {
   //   console.log('userID : %s', inJSON.content.preferenceID);
-  //   getUserPreferences(inJSON.content.preferenceID);
+  //   deleteUserPreference(inJSON.content.preferenceID);
+  // }
+  //
+  // function getUserPreferences(uid)
+  // {
+  //   Preference.find({userID: uid}).then(function(preferences){
+  //     res.send(preferences);
+  //   });
+  // }
+  //
+  // function createUserPreference(pObj)
+  // {
+  //   Preference.create(pObj).then(function(preference){
+  //     res.send(preference);
+  //   }).catch(next);
+  // }
+  //
+  // function updateUserPreference(pid, pObj)
+  // {
+  //   Preference.findByIdAndUpdate({_id: pid}, pObj).then(function(){
+  //     Preference.findOne({_id: pid}).then(function(preference){
+  //       res.send(preference);
+  //     });
+  //   });
+  // }
+  //
+  // function deleteUserPreference(pid)
+  // {
+  //   Preference.findByIdAndRemove({_id: pid}).then(function(preference){
+  //     res.send(preference);
+  //   });
   // }
 
 
