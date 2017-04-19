@@ -74,6 +74,6 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 		</p>
 	</li>
 	<li>
-		<b>Note: Whenever index.js is terminated via the command prompt, a new terminal should be opened and the index.js file should be run again from scratch.</b>
+		<b>Note: Whenever index.js is terminated via the command prompt. A new terminal should be opened and the index.js file should be run again from begining.</b>
 	</li>
 </ul>
