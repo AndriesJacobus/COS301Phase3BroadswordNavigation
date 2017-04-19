@@ -9,6 +9,7 @@ const app = express();
 
 //connect to mongodb
 mongoose.connect('mongodb://localhost/UserPreference');
+//Because its been deprecated change it to global promise
 mongoose.Promise = global.Promise;
 
 //middleware used for reading request body
@@ -27,3 +28,38 @@ app.use(function(err, req, res, next){
 app.listen(process.env.port || 4000, function(){
   console.log("Listening for requests");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
