@@ -35,5 +35,28 @@ router.delete('/preferences/:id', function(req, res, next){
     });
 });
 
+  // attempt to make template for nsq
+  // if (qType == "getPreferences")
+  // {
+  //   console.log('userID : %s', inJSON.content.userID);
+  //   getUserPreferences(inJSON.content.userID);
+  // }
+  // else if(qType == "createUserPreference")
+  // {
+  //   console.log('userID : %s', inJSON.content.preferenceObject);
+  //   createUserPreference(inJSON.content.preferenceObject);
+  // }
+  // else if(qType == "updateUserPreference")
+  // {
+  //   console.log('userID : %s', inJSON.content.preferenceObject);
+  //   updateUserPreference(inJSON.content.preferenceObject);
+  // }
+  // else if(qType == "deleteUserPreference")
+  // {
+  //   console.log('userID : %s', inJSON.content.preferenceID);
+  //   getUserPreferences(inJSON.content.preferenceID);
+  // }
+
+
 //Allows ability to import in index
 module.exports = router;
