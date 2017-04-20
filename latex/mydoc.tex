@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\addtolength{\oddsidemargin}{-1.cm}
+\addtolength{\textwidth}{2cm}
+\addtolength{\topmargin}{-2cm}
+\addtolength{\textheight}{3.5cm}
+
+
+\usepackage{pdflscape}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{cite}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	filecolor=magenta,
+	urlcolor=cyan,
+}
+
+% define the title
+\author{Team Broadsword navigation}
+\title{Architectural Requirements Specifications and Design for the NavUP System}
+
+\begin{document}
+	\setlength{\parskip}{6pt}
+	
+	% generates the Cover page
+
+	
+	\tableofcontents
+	
+	\newpage
+
+\section{Technology}
+\subsection{MEAN STACK}  
+	MEAN stack is the best solution for building application using javascript and since we are implementing the MVC architectural pattern for the navUP system , MEAN stack is the best way to deploy the current architectural pattern . It includes mongo , express , angular and nodejs which allows us to built fast and maintable applications.
+\subsubsection{MongoDB}	
+MongoDB is a document-oriented database that provides high perfomace,availability and scalability. It works on the concepts of collection and documents. For the NavUP application , we used mongoDB to store data such as startpoint,endpoint or user preferences.
+\subsubsection{Express}
+Express is fast and flexible framework for nodejs . 
+\subsubsection{Nodejs}	
+ Nodejs is JavaScript run-time environment for executing JavaScript code server-side. 
+ \subsection{NSQ} 
+NSQ is a library used for communications between different modules like access ,gis and navigation modules. 
+\end{document}
