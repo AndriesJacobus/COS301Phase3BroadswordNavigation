@@ -1,0 +1,29 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\begin{document}
+
+\section{Introduction}
+
+The reasons for which the service contract will fail can be due to a few actions occuring. Firstly when incorrect start and end locations are sent to the Navigation system, the system will not recognise it and will not return a route. Thus the correct desired start and endpoints must be received.
+
+A second occurance can be when the GIS module does not find a route, resulting in a null being returned. The null retuns must be handles as they will invalidate cached routes.
+
+The only time GIS will be queries is the first time every route is requested. After that first request local cache will first be queried, thus reducing networking as well as request speed.
+
+
+
+\end{document}
