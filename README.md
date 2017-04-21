@@ -40,6 +40,7 @@ COS 301 Team Broadsword navigation
 </table>
 
 The Broadsword team will be responsible for the implementation of the Web Navigation system.
+A documentation of our system has also been provided.
 
 <br/>
 <h2><b>How to compile:</b></h2>
