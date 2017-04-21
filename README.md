@@ -58,6 +58,7 @@ The Broadsword team will be responsible for the implementation of the Web Naviga
 <ol>
 	<li>Start an nsq server by using makefile command "make test-comms"</li>
 	<li>Start MongoDB</li>
+	<li>Run navigationLocal.js in main branch directory</li>
 	<li>Start "Nav Node Server > index.js" (example screenshot under img/captureOne.jpg)</li>
 	<li>Start "Nav Node Server > nsqExampleAccess.js" (example screenshot under img/captureTwo.jpg)</li>
 	<li>Start "Nav Node Server > nsqExampleGIS.js" (example screenshot under img/captureThree.jpg)</li>
