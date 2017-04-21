@@ -6,13 +6,11 @@ COS 301 Team Broadsword navigation
     <th>Surname</th>
     <th>Name</th>
     <th>Student Number</th>
-    <th>LinkedIn</th>
   </tr>
   <tr>
     <td>Bondjobo</td>
     <td>Jocelyn</td>
     <td>u13232852</td>
-    <td>https://www.linkedin.com/in/jocelyn-bondjobo-993056b7/?trk=nav_responsive_tab_profile</td>
   </tr>
   <tr>
     <td>Brijlal</td>
